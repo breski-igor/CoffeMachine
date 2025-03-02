@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoffeeMachine>
+	<Product name="Espresso" price="150" />
+	<Product name="Cappuccino" price="200" />
+	<Product name="Latte" price="250" />
+	<Coin value="10" count="10" />
+	<Coin value="20" count="10" />
+	<Coin value="50" count="10" />
+	<Coin value="100" count="10" />
+	<Coin value="200" count="10" />
+</CoffeeMachine>
