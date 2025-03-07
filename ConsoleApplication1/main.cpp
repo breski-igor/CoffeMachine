@@ -1,13 +1,21 @@
 ﻿#include "CoffeeMachine.h"
 #include <iostream>
-using namespace std;
+#include <fstream>
 
 int main() {
     CoffeeMachine machine;
-    const string configFile = "XMLFile.xml";
-    if (!machine.loadConfiguration(configFile)) {
-        cout << "Greška pri učitavanju konfiguracije." << endl;
+    std::ifstream configFile("XMLFile.xml");
+
+    if (!configFile) {
+        std::cout << "Cannot open the XML file." << std::endl;
         return 1;
     }
 
+    if (!machine.loadConfiguration(configFile)) {
+        std::cout << "Error loading configuration." << std::endl;
+        return 1;
+    }
+
+    std::cout << "Configuration successfull." << std::endl;
+    return 0;
 }

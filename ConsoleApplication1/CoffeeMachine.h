@@ -3,9 +3,8 @@
 #include <vector>
 #include <utility>
 
-using namespace std;
 struct Product {
-    string name;
+    std::string name;
     double price;
     int stock;
 };
@@ -17,7 +16,7 @@ struct Coin {
 class CoffeeMachine {
 public:
 
-    bool loadConfiguration(const string& filename);
+    bool loadConfiguration(std::istream& inputStream);
 	/*
     void showProducts() const;
     void showCoins() const;
@@ -26,7 +25,7 @@ public:
     */
 
 private:
-    vector<Product> products;
-    vector<Coin> coins;
+    std::vector<Product> products;
+    std::vector<Coin> coins;
 
 };

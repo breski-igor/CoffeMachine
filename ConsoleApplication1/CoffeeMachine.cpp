@@ -1,22 +1,20 @@
 ﻿#include "CoffeeMachine.h"
 #include "tinyxml.h"
 #include <iostream>
-#include <sstream>
-#include <iomanip>
+#include <stdexcept>
 
-using namespace std;
+bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
+    std::string xmlContent((std::istreambuf_iterator<char>(inputStream)), std::istreambuf_iterator<char>());
+    TiXmlDocument doc;
 
-
-bool CoffeeMachine::loadConfiguration(const string& filename) {
-    TiXmlDocument doc(filename.c_str());
-    if (!doc.LoadFile()) {
-        cerr << "Ne mogu učitati datoteku: " << filename << endl;
+    if (!doc.Parse(xmlContent.c_str())) {
+        std::cerr << "I cannot load the configuration XML." << std::endl;
         return false;
     }
 
     TiXmlElement* root = doc.FirstChildElement("CoffeeMachine");
     if (!root) {
-        cerr << "Neispravan format konfiguracijske datoteke." << endl;
+        std::cerr << "Invalid configuration file format." << std::endl;
         return false;
     }
 
@@ -27,27 +25,43 @@ bool CoffeeMachine::loadConfiguration(const string& filename) {
         const char* name = elem->Attribute("name");
         const char* priceStr = elem->Attribute("price");
         const char* stockStr = elem->Attribute("stock");
+
         if (!name || !priceStr || !stockStr) {
-            cerr << "Nedostaje obavezan atribut u proizvodu." << endl;
+            std::cerr << "Missing required attribute in product." << std::endl;
             continue;
         }
-        Product p;
-        p.name = name;
-        p.price = atof(priceStr);
-        p.stock = atoi(stockStr);
-        products.push_back(p);
+
+        try {
+            Product p;
+            p.name = name;
+            p.price = std::stod(priceStr);
+            p.stock = std::stoi(stockStr);
+            products.push_back(p);
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Error parsing product: " << e.what() << std::endl;
+        }
     }
 
     for (TiXmlElement* elem = root->FirstChildElement("Coin"); elem != nullptr; elem = elem->NextSiblingElement("Coin")) {
         const char* valueStr = elem->Attribute("value");
         const char* countStr = elem->Attribute("count");
-        if (valueStr && countStr) {
+
+        if (!valueStr || !countStr) {
+            std::cerr << "Missing required attribute in coin." << std::endl;
+            continue;
+        }
+
+        try {
             Coin c;
-            c.value = atof(valueStr);
-            c.count = atoi(countStr);
+            c.value = std::stod(valueStr);
+            c.count = std::stoi(countStr);
             coins.push_back(c);
         }
+        catch (const std::exception& e) {
+            std::cerr << "Error parsing coins: " << e.what() << std::endl;
+        }
     }
-    return true;
 
+    return true;
 }
