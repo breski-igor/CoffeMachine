@@ -65,3 +65,21 @@ bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
 
     return true;
 }
+
+
+void CoffeeMachine::showProducts() const {
+    std::cout << "Available products:" << std::endl;
+    for (const auto& p : products) {
+        std::cout << "Name: " << p.name << ", Price: " << p.price << " euros (Stock: " << p.stock << ")" << std::endl;
+    }
+}
+
+void CoffeeMachine::showCoins() const {
+    std::cout << "coin stock:" << std::endl;
+    double total = 0;
+    for (const auto& c : coins) {
+        std::cout << "Value: " << c.value << " eur, Amount: " << c.count << std::endl;
+        total += c.value * c.count;
+    }
+    std::cout << "Total value: " << total << " eur." << std::endl;
+}

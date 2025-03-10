@@ -16,6 +16,25 @@ int main() {
         return 1;
     }
 
-    std::cout << "Configuration successfull." << std::endl;
+    int choice = 0;
+    do {
+        std::cout << "\nChoose an option:" << std::endl;
+        std::cout << "1. Show product stock" << std::endl;
+        std::cout << "2. Show coin stock" << std::endl;
+        std::cout << "3. Order a drink" << std::endl;
+        std::cout << "0. Exit" << std::endl;
+        std::cin >> choice;
+
+        switch (choice) {
+        case 1:
+            machine.showProducts();
+            break;
+        case 2:
+            machine.showCoins();
+            break;
+        }
+    } while (choice != 0);
+
+
     return 0;
 }
