@@ -104,13 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Korisnik\Desktop\coffe\ConsoleApplication1\packages\tinyxml.2.8.2.3\build\native\lib\v141\x64-mt-debug\tinyxml.lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)packages\tinyxml.2.8.2.3\build\native\lib\v141\x64-mt-debug</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);tinyxml.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"C:\Users\Korisnik\Desktop\coffe\ConsoleApplication1\packages\tinyxml.2.8.2.3\build\native\lib\v141\x64-mt-debug";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\tinyxml.2.8.2.3\build\native\lib\v141\x64-mt-debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
