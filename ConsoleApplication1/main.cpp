@@ -32,10 +32,37 @@ int main() {
         case 2:
             machine.showCoins();
             break;
+        case 3: {
+            std::cout << "Enter the name of the drink: ";
+            std::string product;
+            std::cin >> product;
+
+            double insertedTotal = 0.0;
+            double coin = 0.0;
+            std::cout << "Insert money (enter 0 to finish):" << std::endl;
+            while (true) {
+                std::cout << "Insert a coin: ";
+                std::cin >> coin;
+                if (coin == 0)
+                    break;
+                insertedTotal += coin;
+                machine.insertCoin(coin, insertedTotal);
+                std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
+            }
+
+            if (!machine.orderCoffee(product, insertedTotal)) {
+                std::cout << "Transaction failed." << std::endl;
+                
+            }
+            break;
+        }
+        case 0:
+            std::cout << "Exiting..." << std::endl;
+            break;
+        default:
+            std::cout << "Unknown option." << std::endl;
         }
     } while (choice != 0);
-
-
 
     return 0;
 }

@@ -24,7 +24,7 @@ namespace CoffeeMachineTests
 
             Assert::IsTrue(loaded, L"Configuration data successfully loaded.");
         }
-        /*
+        
         TEST_METHOD(TestOrderCoffeeInsufficientMoney)
         {
             std::stringstream xmlData;
@@ -40,7 +40,7 @@ namespace CoffeeMachineTests
             bool result = machine.orderCoffee("Espresso", 1.0);
             Assert::IsFalse(result, L"Not enough coins inserted.");
         }
-
+        
         TEST_METHOD(TestOrderCoffeeSuccessful)
         {
             std::stringstream xmlData;
@@ -105,6 +105,6 @@ namespace CoffeeMachineTests
 
             bool result = machine.orderCoffee("Espresso", 2.00);
             Assert::IsFalse(result, L"Not enough coins to give the correct change.");
-        }*/
+        }
     };
 }
