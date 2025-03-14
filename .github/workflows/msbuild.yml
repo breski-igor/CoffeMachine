@@ -22,10 +22,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Restore NuGet packages
-      run: nuget restore ConsoleApplication1.sln
-
-
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
