@@ -33,9 +33,12 @@ int main() {
             machine.showCoins();
             break;
         case 3: {
-            std::cout << "Enter the name of the drink: ";
-            std::string product;
-            std::cin >> product;
+            std::cout << "1 - Espresso\n";
+            std::cout << "2 - Cappuccino\n";
+            std::cout << "3 - Latte\n";
+            std::cout << "Enter the number of the drink: ";
+            int number;
+            std::cin >> number;
 
             double insertedTotal = 0.0;
             double coin = 0.0;
@@ -50,7 +53,7 @@ int main() {
                 std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
             }
 
-            if (!machine.orderCoffee(product, insertedTotal)) {
+            if (!machine.orderCoffee(number, insertedTotal)) {
                 std::cout << "Transaction failed." << std::endl;
                 
             }

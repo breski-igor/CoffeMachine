@@ -23,17 +23,19 @@ bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
     coins.clear();
 
     for (TiXmlElement* elem = root->FirstChildElement("Product"); elem != nullptr; elem = elem->NextSiblingElement("Product")) {
+        const char* number = elem->Attribute("number");
         const char* name = elem->Attribute("name");
         const char* priceStr = elem->Attribute("price");
         const char* stockStr = elem->Attribute("stock");
 
-        if (!name || !priceStr || !stockStr) {
+        if (!number || !name || !priceStr || !stockStr) {
             std::cerr << "Missing required attribute in product." << std::endl;
             continue;
         }
 
         try {
             Product p;
+            p.number = std::stoi(number);
             p.name = name;
             p.price = std::stod(priceStr);
             p.stock = std::stoi(stockStr);
@@ -119,9 +121,9 @@ bool CoffeeMachine::calculateChange(double change, std::vector<std::pair<double,
     return (remaining <= 1e-6);
 }
 
-bool CoffeeMachine::orderCoffee(const std::string& productName, double insertedAmount) {
+bool CoffeeMachine::orderCoffee(const int number, double insertedAmount) {
     auto it = std::find_if(products.begin(), products.end(), [&](const Product& p) {
-        return p.name == productName;
+        return p.number == number;
         });
 
     if (it == products.end()) {

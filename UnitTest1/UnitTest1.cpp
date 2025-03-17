@@ -15,7 +15,7 @@ namespace CoffeeMachineTests
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
-            xmlData << "    <Product name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
+            xmlData << "    <Product number=\"1\" name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
             xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
 
@@ -30,14 +30,14 @@ namespace CoffeeMachineTests
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
-            xmlData << "    <Product name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
+            xmlData << "    <Product number=\"1\" name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
             xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee("Espresso", 1.0);
+            bool result = machine.orderCoffee(1, 1.0);
             Assert::IsFalse(result, L"Not enough coins inserted.");
         }
         
@@ -46,7 +46,7 @@ namespace CoffeeMachineTests
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
-            xmlData << "    <Product name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
+            xmlData << "    <Product number=\"1\" name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
             xmlData << "    <Coin value=\"0.50\" count=\"10\" />\n";
             xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
@@ -54,7 +54,7 @@ namespace CoffeeMachineTests
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee("Espresso", 2.00);
+            bool result = machine.orderCoffee(1, 2.00);
             Assert::IsTrue(result, L"Order successful.");
         }
 
@@ -63,14 +63,14 @@ namespace CoffeeMachineTests
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
-            xmlData << "    <Product name=\"Cappuccino\" price=\"2.00\" stock=\"5\" />\n";
+            xmlData << "    <Product number=\"1\" name=\"Cappuccino\" price=\"2.00\" stock=\"5\" />\n";
             xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee("Espresso", 2.00);
+            bool result = machine.orderCoffee(2, 2.00);
             Assert::IsFalse(result, L"Product does not exist in the configuration.");
         }
 
@@ -79,7 +79,7 @@ namespace CoffeeMachineTests
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
-            xmlData << "    <Product name=\"Espresso\" price=\"1.50\" stock=\"0\" />\n";
+            xmlData << "    <Product number=\"1\" name=\"Espresso\" price=\"1.50\" stock=\"0\" />\n";
             xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
             xmlData << "    <Coin value=\"0.50\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
@@ -87,7 +87,7 @@ namespace CoffeeMachineTests
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee("Espresso", 2.00);
+            bool result = machine.orderCoffee(1, 2.00);
             Assert::IsFalse(result, L"Product is out of stock.");
         }
 
@@ -96,14 +96,14 @@ namespace CoffeeMachineTests
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
-            xmlData << "    <Product name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
+            xmlData << "    <Product number=\"1\" name=\"Espresso\" price=\"1.50\" stock=\"5\" />\n";
             xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee("Espresso", 2.00);
+            bool result = machine.orderCoffee(1, 2.00);
             Assert::IsFalse(result, L"Not enough coins to give the correct change.");
         }
     };
