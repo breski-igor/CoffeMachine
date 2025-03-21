@@ -48,7 +48,6 @@ int main() {
                 std::cin >> coin;
                 if (coin == 0)
                     break;
-                insertedTotal += coin;
                 machine.insertCoin(coin, insertedTotal);
                 std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
             }
@@ -60,10 +59,10 @@ int main() {
             break;
         }
         case 0:
-            std::cout << "Exiting..." << std::endl;
+            std::cout << "Exiting." << std::endl;
             break;
         default:
-            std::cout << "Unknown option." << std::endl;
+            std::cout << "Unknown." << std::endl;
         }
     } while (choice != 0);
 
