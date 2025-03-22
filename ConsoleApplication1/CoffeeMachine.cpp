@@ -214,7 +214,7 @@ bool CoffeeMachine::saveConfiguration(const std::string& filename) {
         coinElem->SetAttribute("count", std::to_string(coin.count).c_str());
         root->LinkEndChild(coinElem);
     }
-	doc.Print();
+	
     
     if (!doc.SaveFile(filename)) {
         std::cerr << "Error: Could not save the updated XML file!" << std::endl;
