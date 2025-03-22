@@ -16,6 +16,8 @@ int main() {
         return 1;
     }
 
+    configFile.close();
+    
     int choice = 0;
     do {
         std::cout << "\nChoose an option:" << std::endl;

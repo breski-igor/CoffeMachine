@@ -184,9 +184,7 @@ bool CoffeeMachine::orderCoffee(const int number, double insertedAmount) {
     std::cout << "Ordered: " << it->name << ". Change returned: " << changeRequired << " euros." << std::endl;
     insertedCoins.clear();
 
-    //saveConfiguration("C:\\Users\\Korisnik\\Desktop\\test.xml"); sprema mi najnormalnije u testni file koji je na desktopu
-	//saveConfiguration("C:\\Users\\Korisnik\\Desktop\\coffe\\ConsoleApplication1\\ConsoleApplication1\\XMLFile.xml"); // apsolutna putanja filea sa kojeg sam učitao konfiguraciju na koju ne mogu upisivati
-	saveConfiguration("XMLFile.xml"); // relativna putanja filea sa kojeg sam učitao konfiguraciju na koju mogu upisivati
+    saveConfiguration("XMLFile.xml");
     return true;
 }
 
@@ -216,12 +214,12 @@ bool CoffeeMachine::saveConfiguration(const std::string& filename) {
         coinElem->SetAttribute("count", std::to_string(coin.count).c_str());
         root->LinkEndChild(coinElem);
     }
-	doc.Print(); // ovo sam dodao da vidim da li stvarno postoji sadrzaj koji se sprema u xml file
+	doc.Print();
     
     if (!doc.SaveFile(filename)) {
         std::cerr << "Error: Could not save the updated XML file!" << std::endl;
 
-		std::cerr << "Error: " << doc.ErrorDesc() << std::endl; // ovo sam dodao da vidim koji je tocno error, doduse nista mi ne javlja 
+		std::cerr << "Error: " << doc.ErrorDesc() << std::endl;
         
         return false;
     }
