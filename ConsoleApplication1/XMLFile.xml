@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CoffeeMachine>
-    <Product number="1" name="Espresso" price="1.500000" stock="10" />
-    <Product number="2" name="Cappuccino" price="2.000000" stock="10" />
-    <Product number="3" name="Latte" price="2.500000" stock="10" />
-    <Coin value="0.100000" count="10" />
-    <Coin value="0.200000" count="10" />
-    <Coin value="0.500000" count="10" />
-    <Coin value="1.000000" count="10" />
-    <Coin value="2.000000" count="10" />
+    <Product number="1" name="Espresso" price="1" stock="10" />
+    <Product number="2" name="Cappuccino" price="2" stock="10" />
+    <Product number="3" name="Latte" price="3" stock="10" />
+    <Coin value="1" count="10" />
+    <Coin value="2" count="10" />
 </CoffeeMachine>

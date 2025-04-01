@@ -7,12 +7,12 @@
 struct Product {
     int number;
     std::string name;
-    double price;
+    int price;
     int stock;
 };
 
 struct Coin {
-    double value;
+    int value;
     int count;
 };
 
@@ -21,15 +21,15 @@ public:
     bool loadConfiguration(std::istream& inputStream);
     void showProducts() const;
     void showCoins() const;
-    bool orderCoffee(const int number, double insertedAmount);
-    bool insertCoin(double coinValue, double& insertedTotal);
+    bool orderCoffee(const int number, int insertedAmount);
+    bool insertCoin(int coinValue, int& insertedTotal);
     bool saveConfiguration(const std::string& filename);
 
 private:
     std::vector<Product> products;
     std::vector<Coin> coins;
-    std::vector<std::pair<double, int>> insertedCoins;
+    std::vector<int> insertedCoins;
 
-    bool calculateChange(double change, std::vector<std::pair<double, int>>& changeCoins);
+    bool calculateChange(int change, std::vector<std::pair<int, int>>& changeCoins);
     void refundCoins();
 };

@@ -42,8 +42,8 @@ int main() {
             int number;
             std::cin >> number;
 
-            double insertedTotal = 0.0;
-            double coin = 0.0;
+            int insertedTotal = 0;
+            int coin = 0.0;
             std::cout << "Insert money (enter 0 to finish):" << std::endl;
             while (true) {
                 std::cout << "Insert a coin: ";

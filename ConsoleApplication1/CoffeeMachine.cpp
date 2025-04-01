@@ -81,18 +81,18 @@ void CoffeeMachine::showCoins() const {
     std::cout << "Coin stock:" << std::endl;
     double total = 0;
     for (const auto& c : coins) {
-        std::cout << "Value: " << c.value << " eur, Amount: " << c.count << std::endl;
+        std::cout << "Value: " << c.value<< " eur, Amount: " << c.count << std::endl;
         total += c.value * c.count;
     }
     std::cout << "Total value: " << total << " eur." << std::endl;
 }
 
-bool CoffeeMachine::insertCoin(double coinValue, double& insertedTotal) {
+bool CoffeeMachine::insertCoin(int coinValue, int& insertedTotal) {
     for (auto& c : coins) {
-        if (fabs(c.value - coinValue) < 1e-6) {
+        if (c.value == coinValue) {
             c.count++;
             insertedTotal += coinValue;
-            insertedCoins.push_back(std::make_pair(coinValue, 1));
+            insertedCoins.push_back(coinValue);
             return true;
         }
     }
@@ -100,7 +100,7 @@ bool CoffeeMachine::insertCoin(double coinValue, double& insertedTotal) {
     return false;
 }
 
-bool CoffeeMachine::calculateChange(double change, std::vector<std::pair<double, int>>& changeCoins) {
+bool CoffeeMachine::calculateChange(int change, std::vector<std::pair<int, int>>& changeCoins) {
     std::vector<Coin> sortedCoins = coins;
     std::sort(sortedCoins.begin(), sortedCoins.end(), [](const Coin& a, const Coin& b) {
         return a.value > b.value;
@@ -109,7 +109,7 @@ bool CoffeeMachine::calculateChange(double change, std::vector<std::pair<double,
     double remaining = change;
     for (auto& coin : sortedCoins) {
         int num = 0;
-        while (remaining >= coin.value - 1e-6 && coin.count > num) {
+        while (remaining >= coin.value && coin.count > num) {
             remaining -= coin.value;
             num++;
         }
@@ -117,16 +117,14 @@ bool CoffeeMachine::calculateChange(double change, std::vector<std::pair<double,
             changeCoins.push_back(std::make_pair(coin.value, num));
         }
     }
-    return (remaining <= 1e-6);
+    return (remaining == 0);
 }
 
 void CoffeeMachine::refundCoins() {
-    for (const auto& coin : insertedCoins) {
-        double coinValue = coin.first;
-        int num = coin.second;
+    for (const auto& coinValue : insertedCoins) {
         for (auto& c : coins) {
-            if (fabs(c.value - coinValue) < 1e-6) {
-                c.count -= num;
+            if (c.value == coinValue) {
+                c.count--;
                 break;
             }
         }
@@ -135,7 +133,7 @@ void CoffeeMachine::refundCoins() {
     std::cout << "Inserted coins refunded." << std::endl;
 }
 
-bool CoffeeMachine::orderCoffee(const int number, double insertedAmount) {
+bool CoffeeMachine::orderCoffee(const int number, int insertedAmount) {
     auto it = std::find_if(products.begin(), products.end(), [&](const Product& p) {
         return p.number == number;
         });
@@ -160,7 +158,7 @@ bool CoffeeMachine::orderCoffee(const int number, double insertedAmount) {
     }
 
     double changeRequired = insertedAmount - priceInEuros;
-    std::vector<std::pair<double, int>> changeCoins;
+    std::vector<std::pair<int, int>> changeCoins;
     if (!calculateChange(changeRequired, changeCoins)) {
         std::cout << "Machine cannot provide change. Refunding money." << std::endl;
         refundCoins();
@@ -169,10 +167,10 @@ bool CoffeeMachine::orderCoffee(const int number, double insertedAmount) {
 
 
     for (auto& changePair : changeCoins) {
-        double coinValue = changePair.first;
+        int coinValue = changePair.first;
         int num = changePair.second;
         for (auto& c : coins) {
-            if (fabs(c.value - coinValue) < 1e-6) {
+            if (c.value == coinValue) {
                 c.count -= num;
                 break;
             }
@@ -181,7 +179,7 @@ bool CoffeeMachine::orderCoffee(const int number, double insertedAmount) {
 
 
     it->stock--;
-    std::cout << "Ordered: " << it->name << ". Change returned: " << changeRequired << " euros." << std::endl;
+    std::cout << "Ordered: " << it->name << ". Change returned: " << changeRequired<< " euros." << std::endl;
     insertedCoins.clear();
 
     saveConfiguration("XMLFile.xml");
