@@ -2,9 +2,32 @@
 #include <iostream>
 #include <fstream>
 
-int main() {
+void displayProducts(const std::vector<Product>& products) {
+    std::cout << "Available products:" << std::endl;
+    for (const auto& p : products) {
+        std::cout << p.number << " - " << p.name
+            << ", Price: " << p.price
+            << " euros (Stock: " << p.stock << ")" << std::endl;
+    }
+}
+
+void displayCoins(const std::vector<Coin>& coins) {
+    std::cout << "Coin stock:" << std::endl;
+    int total = 0;
+    for (const auto& c : coins) {
+        std::cout << "Value: " << c.value << " eur, Amount: " << c.count << std::endl;
+        total += c.value * c.count;
+    }
+    std::cout << "Total value: " << total << " eur." << std::endl;
+}
+int main(int argc, char* argv[]) {
+	if (argc < 2) {
+		std::cout << "Usage: " << argv[0] << " <XMLFile.xml>" << std::endl;
+		return 1;
+	}
+
     CoffeeMachine machine;
-    std::ifstream configFile("XMLFile.xml");
+    std::ifstream configFile(argv[1]);
 
     if (!configFile) {
         std::cout << "Cannot open the XML file." << std::endl;
@@ -17,7 +40,7 @@ int main() {
     }
 
     configFile.close();
-    
+
     int choice = 0;
     do {
         std::cout << "\nChoose an option:" << std::endl;
@@ -29,38 +52,54 @@ int main() {
 
         switch (choice) {
         case 1:
-            machine.showProducts();
+            displayProducts(machine.getProducts());
             break;
         case 2:
-            machine.showCoins();
+            displayCoins(machine.getCoins());
             break;
         case 3: {
-            std::cout << "1 - Espresso\n";
-            std::cout << "2 - Cappuccino\n";
-            std::cout << "3 - Latte\n";
+            displayProducts(machine.getProducts());
             std::cout << "Enter the number of the drink: ";
             int number;
             std::cin >> number;
 
             int insertedTotal = 0;
-            int coin = 0.0;
+            int coin = 0;
             std::cout << "Insert money (enter 0 to finish):" << std::endl;
             while (true) {
                 std::cout << "Insert a coin: ";
                 std::cin >> coin;
-                if (coin == 0)
-                    break;
-                machine.insertCoin(coin, insertedTotal);
-                std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
+                if (coin == 0) break;
+                if (machine.insertCoin(coin, insertedTotal)) {
+                    std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
+                }
+                else {
+                    std::cout << "Invalid coin. Please try again." << std::endl;
+                }
             }
 
-            if (!machine.orderCoffee(number, insertedTotal)) {
-                std::cout << "Transaction failed." << std::endl;
-                
+            OrderStatus status = machine.orderCoffee(number, insertedTotal);
+            switch (status) {
+            case OrderStatus::SUCCESS:
+                std::cout << "Coffee ordered successfully!" << std::endl;
+                break;
+            case OrderStatus::PRODUCT_NOT_FOUND:
+                std::cout << "Product not found." << std::endl;
+                break;
+            case OrderStatus::OUT_OF_STOCK:
+                std::cout << "Product out of stock." << std::endl;
+                break;
+            case OrderStatus::INSUFFICIENT_FUNDS:
+                std::cout << "Insufficient funds." << std::endl;
+                break;
+            case OrderStatus::CANNOT_PROVIDE_CHANGE:
+                std::cout << "Machine cannot provide change. Refunding money." << std::endl;
+                break;
             }
             break;
         }
         case 0:
+			machine.saveConfiguration(argv[1]);
             std::cout << "Exiting." << std::endl;
             break;
         default:

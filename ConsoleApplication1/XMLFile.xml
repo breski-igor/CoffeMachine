@@ -4,5 +4,5 @@
     <Product number="2" name="Cappuccino" price="2" stock="10" />
     <Product number="3" name="Latte" price="3" stock="10" />
     <Coin value="1" count="10" />
-    <Coin value="2" count="10" />
+    <Coin value="2" count="11" />
 </CoffeeMachine>

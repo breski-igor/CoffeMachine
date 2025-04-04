@@ -10,13 +10,11 @@ bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
     TiXmlDocument doc;
 
     if (!doc.Parse(xmlContent.c_str())) {
-        std::cerr << "Error: Cannot load the configuration XML." << std::endl;
         return false;
     }
 
     TiXmlElement* root = doc.FirstChildElement("CoffeeMachine");
     if (!root) {
-        std::cerr << "Error: Invalid configuration file format. Root element 'CoffeeMachine' not found." << std::endl;
         return false;
     }
 
@@ -30,7 +28,6 @@ bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
         const char* stockStr = elem->Attribute("stock");
 
         if (!number || !name || !priceStr || !stockStr) {
-            std::cerr << "Warning: Missing required attribute in product. Skipping this product." << std::endl;
             continue;
         }
 
@@ -38,12 +35,12 @@ bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
             Product p;
             p.number = std::stoi(number);
             p.name = name;
-            p.price = std::stod(priceStr);
+            p.price = std::stoi(priceStr);
             p.stock = std::stoi(stockStr);
             products.push_back(p);
         }
-        catch (const std::exception& e) {
-            std::cerr << "Error parsing product: " << e.what() << std::endl;
+        catch (const std::exception&) {
+            continue;
         }
     }
 
@@ -52,39 +49,29 @@ bool CoffeeMachine::loadConfiguration(std::istream& inputStream) {
         const char* countStr = elem->Attribute("count");
 
         if (!valueStr || !countStr) {
-            std::cerr << "Warning: Missing required attribute in coin. Skipping this coin." << std::endl;
             continue;
         }
 
         try {
             Coin c;
-            c.value = std::stod(valueStr);
+            c.value = std::stoi(valueStr);
             c.count = std::stoi(countStr);
             coins.push_back(c);
         }
-        catch (const std::exception& e) {
-            std::cerr << "Error parsing coins: " << e.what() << std::endl;
+        catch (const std::exception&) {
+            continue;
         }
     }
 
     return true;
 }
 
-void CoffeeMachine::showProducts() const {
-    std::cout << "Available products:" << std::endl;
-    for (const auto& p : products) {
-        std::cout << "Name: " << p.name << ", Price: " << p.price << " euros (Stock: " << p.stock << ")" << std::endl;
-    }
+const std::vector<Product>& CoffeeMachine::getProducts() const {
+    return products;
 }
 
-void CoffeeMachine::showCoins() const {
-    std::cout << "Coin stock:" << std::endl;
-    double total = 0;
-    for (const auto& c : coins) {
-        std::cout << "Value: " << c.value<< " eur, Amount: " << c.count << std::endl;
-        total += c.value * c.count;
-    }
-    std::cout << "Total value: " << total << " eur." << std::endl;
+const std::vector<Coin>& CoffeeMachine::getCoins() const {
+    return coins;
 }
 
 bool CoffeeMachine::insertCoin(int coinValue, int& insertedTotal) {
@@ -96,7 +83,6 @@ bool CoffeeMachine::insertCoin(int coinValue, int& insertedTotal) {
             return true;
         }
     }
-    std::cout << "Invalid coin." << std::endl;
     return false;
 }
 
@@ -106,7 +92,7 @@ bool CoffeeMachine::calculateChange(int change, std::vector<std::pair<int, int>>
         return a.value > b.value;
         });
 
-    double remaining = change;
+    int remaining = change;
     for (auto& coin : sortedCoins) {
         int num = 0;
         while (remaining >= coin.value && coin.count > num) {
@@ -130,41 +116,35 @@ void CoffeeMachine::refundCoins() {
         }
     }
     insertedCoins.clear();
-    std::cout << "Inserted coins refunded." << std::endl;
 }
 
-bool CoffeeMachine::orderCoffee(const int number, int insertedAmount) {
+OrderStatus CoffeeMachine::orderCoffee(int number, int insertedAmount) {
     auto it = std::find_if(products.begin(), products.end(), [&](const Product& p) {
         return p.number == number;
         });
 
     if (it == products.end()) {
-        std::cout << "Product not found." << std::endl;
         refundCoins();
-        return false;
+        return OrderStatus::PRODUCT_NOT_FOUND;
     }
 
     if (it->stock <= 0) {
-        std::cout << "Product out of stock." << std::endl;
         refundCoins();
-        return false;
+        return OrderStatus::OUT_OF_STOCK;
     }
 
-    double priceInEuros = it->price;
+    int priceInEuros = it->price;
     if (insertedAmount < priceInEuros) {
-        std::cout << "Insufficient funds." << std::endl;
         refundCoins();
-        return false;
+        return OrderStatus::INSUFFICIENT_FUNDS;
     }
 
-    double changeRequired = insertedAmount - priceInEuros;
+    int changeRequired = insertedAmount - priceInEuros;
     std::vector<std::pair<int, int>> changeCoins;
     if (!calculateChange(changeRequired, changeCoins)) {
-        std::cout << "Machine cannot provide change. Refunding money." << std::endl;
         refundCoins();
-        return false;
+        return OrderStatus::CANNOT_PROVIDE_CHANGE;
     }
-
 
     for (auto& changePair : changeCoins) {
         int coinValue = changePair.first;
@@ -177,24 +157,17 @@ bool CoffeeMachine::orderCoffee(const int number, int insertedAmount) {
         }
     }
 
-
     it->stock--;
-    std::cout << "Ordered: " << it->name << ". Change returned: " << changeRequired<< " euros." << std::endl;
     insertedCoins.clear();
-
-    saveConfiguration("XMLFile.xml");
-    return true;
+    return OrderStatus::SUCCESS;
 }
 
 bool CoffeeMachine::saveConfiguration(const std::string& filename) {
-
     TiXmlDocument doc;
-    TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "utf-8", "");
-    doc.LinkEndChild(decl);
+    doc.LinkEndChild(new TiXmlDeclaration("1.0", "utf-8", ""));
 
     TiXmlElement* root = new TiXmlElement("CoffeeMachine");
     doc.LinkEndChild(root);
-
 
     for (const auto& product : products) {
         TiXmlElement* productElem = new TiXmlElement("Product");
@@ -205,23 +178,12 @@ bool CoffeeMachine::saveConfiguration(const std::string& filename) {
         root->LinkEndChild(productElem);
     }
 
-
     for (const auto& coin : coins) {
         TiXmlElement* coinElem = new TiXmlElement("Coin");
         coinElem->SetAttribute("value", std::to_string(coin.value).c_str());
         coinElem->SetAttribute("count", std::to_string(coin.count).c_str());
         root->LinkEndChild(coinElem);
     }
-	
-    
-    if (!doc.SaveFile(filename)) {
-        std::cerr << "Error: Could not save the updated XML file!" << std::endl;
 
-		std::cerr << "Error: " << doc.ErrorDesc() << std::endl;
-        
-        return false;
-    }
-
-    std::cout << "Configuration successfully saved to " << filename << std::endl;
-    return true;
+    return doc.SaveFile(filename);
 }

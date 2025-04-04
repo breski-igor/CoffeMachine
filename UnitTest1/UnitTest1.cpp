@@ -37,8 +37,9 @@ namespace CoffeeMachineTests
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee(1, 1);
-            Assert::IsFalse(result, L"Not enough coins inserted.");
+            OrderStatus result = machine.orderCoffee(1, 1);
+            Assert::AreEqual(static_cast<int>(OrderStatus::INSUFFICIENT_FUNDS), static_cast<int>(result),
+                L"Should return INSUFFICIENT_FUNDS when not enough money inserted");
         }
         
         TEST_METHOD(TestOrderCoffeeSuccessful)
@@ -47,30 +48,32 @@ namespace CoffeeMachineTests
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
             xmlData << "    <Product number=\"1\" name=\"Espresso\" price=\"1\" stock=\"5\" />\n";
-            xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
+            xmlData << "    <Coin value=\"1\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee(1, 2);
-            Assert::IsTrue(result, L"Order successful.");
+            OrderStatus result = machine.orderCoffee(1, 2);
+            Assert::AreEqual(static_cast<int>(OrderStatus::SUCCESS), static_cast<int>(result),
+                L"Should return SUCCESS when enough money is inserted");
         }
-
+        
         TEST_METHOD(TestOrderCoffeeProductNotFound)
         {
             std::stringstream xmlData;
             xmlData << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             xmlData << "<CoffeeMachine>\n";
             xmlData << "    <Product number=\"1\" name=\"Cappuccino\" price=\"2\" stock=\"5\" />\n";
-            xmlData << "    <Coin value=\"1.00\" count=\"10\" />\n";
+            xmlData << "    <Coin value=\"1\" count=\"10\" />\n";
             xmlData << "</CoffeeMachine>\n";
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee(2, 2.00);
-            Assert::IsFalse(result, L"Product does not exist in the configuration.");
+            OrderStatus result = machine.orderCoffee(2, 2);
+            Assert::AreEqual(static_cast<int>(OrderStatus::PRODUCT_NOT_FOUND), static_cast<int>(result),
+                L"Should return PRODUCT_NOT_FOUND when product doesn't exist");
         }
 
         TEST_METHOD(TestOrderCoffeeOutOfStock)
@@ -86,8 +89,9 @@ namespace CoffeeMachineTests
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee(1, 2.00);
-            Assert::IsFalse(result, L"Product is out of stock.");
+            OrderStatus result = machine.orderCoffee(1, 2.00);
+			Assert::AreEqual(static_cast<int>(OrderStatus::OUT_OF_STOCK), static_cast<int>(result),
+				L"Should return OUT_OF_STOCK when product is out of stock");
         }
 
         TEST_METHOD(TestOrderCoffeeInsufficientChange)
@@ -102,8 +106,9 @@ namespace CoffeeMachineTests
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
 
-            bool result = machine.orderCoffee(1, 2.00);
-            Assert::IsFalse(result, L"Not enough coins to give the correct change.");
+            OrderStatus result = machine.orderCoffee(1, 2.00);
+			Assert::AreEqual(static_cast<int>(OrderStatus::CANNOT_PROVIDE_CHANGE), static_cast<int>(result),
+				L"Should return CANNOT_PROVIDE_CHANGE when unable to provide change");
         }
     };
 }

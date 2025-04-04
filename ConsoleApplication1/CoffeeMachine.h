@@ -4,6 +4,14 @@
 #include <utility>
 #include <iosfwd>
 
+enum class OrderStatus {
+    SUCCESS,
+    PRODUCT_NOT_FOUND,
+    OUT_OF_STOCK,
+    INSUFFICIENT_FUNDS,
+    CANNOT_PROVIDE_CHANGE
+};
+
 struct Product {
     int number;
     std::string name;
@@ -19,9 +27,9 @@ struct Coin {
 class CoffeeMachine {
 public:
     bool loadConfiguration(std::istream& inputStream);
-    void showProducts() const;
-    void showCoins() const;
-    bool orderCoffee(const int number, int insertedAmount);
+    const std::vector<Product>& getProducts() const;
+    const std::vector<Coin>& getCoins() const;
+    OrderStatus orderCoffee(int number, int insertedAmount);
     bool insertCoin(int coinValue, int& insertedTotal);
     bool saveConfiguration(const std::string& filename);
 
