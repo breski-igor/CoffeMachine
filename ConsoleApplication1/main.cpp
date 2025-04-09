@@ -20,6 +20,67 @@ void displayCoins(const std::vector<Coin>& coins) {
     }
     std::cout << "Total value: " << total << " eur." << std::endl;
 }
+
+void order(CoffeeMachine& machine) {
+        displayProducts(machine.getProducts());
+        int number;
+        bool validInput = false;
+
+        do {
+            std::cout << "Enter the number of the drink or 0 to exit: ";
+            std::cin >> number;
+
+            if (std::cin.fail() || (number != 0 && number != 1 && number != 2 && number != 3)) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Invalid input. Enter the number of the drink or 0 to exit : \n";
+            }
+            else {
+                validInput = true;
+            }
+        } while (!validInput);
+
+        if (number == 0) {
+            std::cout << "Exiting.\n";
+            return;
+        }
+
+        int insertedTotal = 0;
+        int coin = 0;
+        std::cout << "Insert money (enter 0 to finish):" << std::endl;
+        while (true) {
+            std::cout << "Insert a coin: ";
+            std::cin >> coin;
+            if (coin == 0) break;
+            if (machine.insertCoin(coin, insertedTotal)) {
+                std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
+            }
+            else {
+                std::cout << "Invalid coin. Please try again." << std::endl;
+            }
+        }
+
+        OrderStatus status = machine.orderCoffee(number, insertedTotal);
+        switch (status) {
+        case OrderStatus::SUCCESS:
+            std::cout << "Coffee ordered successfully!" << std::endl;
+            break;
+        case OrderStatus::PRODUCT_NOT_FOUND:
+            std::cout << "Product not found." << std::endl;
+            break;
+        case OrderStatus::OUT_OF_STOCK:
+            std::cout << "Product out of stock." << std::endl;
+            break;
+        case OrderStatus::INSUFFICIENT_FUNDS:
+            std::cout << "Insufficient funds." << std::endl;
+            break;
+        case OrderStatus::CANNOT_PROVIDE_CHANGE:
+            std::cout << "Machine cannot provide change. Refunding money." << std::endl;
+            break;
+        }
+    }
+        
+
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
 		std::cout << "Usage: " << argv[0] << " <XMLFile.xml>" << std::endl;
@@ -57,47 +118,10 @@ int main(int argc, char* argv[]) {
         case 2:
             displayCoins(machine.getCoins());
             break;
-        case 3: {
-            displayProducts(machine.getProducts());
-            std::cout << "Enter the number of the drink: ";
-            int number;
-            std::cin >> number;
-
-            int insertedTotal = 0;
-            int coin = 0;
-            std::cout << "Insert money (enter 0 to finish):" << std::endl;
-            while (true) {
-                std::cout << "Insert a coin: ";
-                std::cin >> coin;
-                if (coin == 0) break;
-                if (machine.insertCoin(coin, insertedTotal)) {
-                    std::cout << "Total inserted: " << insertedTotal << " euros." << std::endl;
-                }
-                else {
-                    std::cout << "Invalid coin. Please try again." << std::endl;
-                }
-            }
-
-            OrderStatus status = machine.orderCoffee(number, insertedTotal);
-            switch (status) {
-            case OrderStatus::SUCCESS:
-                std::cout << "Coffee ordered successfully!" << std::endl;
-                break;
-            case OrderStatus::PRODUCT_NOT_FOUND:
-                std::cout << "Product not found." << std::endl;
-                break;
-            case OrderStatus::OUT_OF_STOCK:
-                std::cout << "Product out of stock." << std::endl;
-                break;
-            case OrderStatus::INSUFFICIENT_FUNDS:
-                std::cout << "Insufficient funds." << std::endl;
-                break;
-            case OrderStatus::CANNOT_PROVIDE_CHANGE:
-                std::cout << "Machine cannot provide change. Refunding money." << std::endl;
-                break;
-            }
-            break;
-        }
+        case 3: 
+			order(machine);
+			break;
+        
         case 0:
 			machine.saveConfiguration(argv[1]);
             std::cout << "Exiting." << std::endl;
