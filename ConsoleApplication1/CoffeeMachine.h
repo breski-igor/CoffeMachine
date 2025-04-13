@@ -29,7 +29,7 @@ public:
     bool loadConfiguration(std::istream& inputStream);
     const std::vector<Product>& getProducts() const;
     const std::vector<Coin>& getCoins() const;
-    OrderStatus orderCoffee(int number, int insertedAmount);
+    OrderStatus orderCoffee(int number, int insertedAmount, int& change);
     bool insertCoin(int coinValue, int& insertedTotal);
     bool saveConfiguration(const std::string& filename);
 

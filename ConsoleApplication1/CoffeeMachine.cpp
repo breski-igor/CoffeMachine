@@ -118,7 +118,7 @@ void CoffeeMachine::refundCoins() {
     insertedCoins.clear();
 }
 
-OrderStatus CoffeeMachine::orderCoffee(int number, int insertedAmount) {
+OrderStatus CoffeeMachine::orderCoffee(int number, int insertedAmount, int& change) {
     auto it = std::find_if(products.begin(), products.end(), [&](const Product& p) {
         return p.number == number;
         });
@@ -139,9 +139,9 @@ OrderStatus CoffeeMachine::orderCoffee(int number, int insertedAmount) {
         return OrderStatus::INSUFFICIENT_FUNDS;
     }
 
-    int changeRequired = insertedAmount - priceInEuros;
+    change = insertedAmount - priceInEuros;
     std::vector<std::pair<int, int>> changeCoins;
-    if (!calculateChange(changeRequired, changeCoins)) {
+    if (!calculateChange(change, changeCoins)) {
         refundCoins();
         return OrderStatus::CANNOT_PROVIDE_CHANGE;
     }

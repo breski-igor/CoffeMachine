@@ -36,8 +36,8 @@ namespace CoffeeMachineTests
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
-
-            OrderStatus result = machine.orderCoffee(1, 1);
+            int change;
+            OrderStatus result = machine.orderCoffee(1, 1, change);
             Assert::AreEqual(static_cast<int>(OrderStatus::INSUFFICIENT_FUNDS), static_cast<int>(result),
                 L"Should return INSUFFICIENT_FUNDS when not enough money inserted");
         }
@@ -53,10 +53,12 @@ namespace CoffeeMachineTests
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
-
-            OrderStatus result = machine.orderCoffee(1, 2);
+            int change;
+            OrderStatus result = machine.orderCoffee(1, 2, change);
             Assert::AreEqual(static_cast<int>(OrderStatus::SUCCESS), static_cast<int>(result),
                 L"Should return SUCCESS when enough money is inserted");
+            Assert::AreEqual(1, change,
+                L"Should return 1 euro in change for 2 euro payment on 1 euro product");
         }
         
         TEST_METHOD(TestOrderCoffeeProductNotFound)
@@ -70,8 +72,8 @@ namespace CoffeeMachineTests
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
-
-            OrderStatus result = machine.orderCoffee(2, 2);
+            int change;
+            OrderStatus result = machine.orderCoffee(2, 2, change);
             Assert::AreEqual(static_cast<int>(OrderStatus::PRODUCT_NOT_FOUND), static_cast<int>(result),
                 L"Should return PRODUCT_NOT_FOUND when product doesn't exist");
         }
@@ -88,8 +90,8 @@ namespace CoffeeMachineTests
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
-
-            OrderStatus result = machine.orderCoffee(1, 2.00);
+            int change;
+            OrderStatus result = machine.orderCoffee(1, 2, change);
 			Assert::AreEqual(static_cast<int>(OrderStatus::OUT_OF_STOCK), static_cast<int>(result),
 				L"Should return OUT_OF_STOCK when product is out of stock");
         }
@@ -105,8 +107,8 @@ namespace CoffeeMachineTests
 
             CoffeeMachine machine;
             machine.loadConfiguration(xmlData);
-
-            OrderStatus result = machine.orderCoffee(1, 2.00);
+            int change;
+            OrderStatus result = machine.orderCoffee(1, 2, change);
 			Assert::AreEqual(static_cast<int>(OrderStatus::CANNOT_PROVIDE_CHANGE), static_cast<int>(result),
 				L"Should return CANNOT_PROVIDE_CHANGE when unable to provide change");
         }
