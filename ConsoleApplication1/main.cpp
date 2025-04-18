@@ -1,6 +1,7 @@
 ﻿#include "CoffeeMachine.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 void displayProducts(const std::vector<Product>& products) {
     std::cout << "Available products:" << std::endl;
@@ -35,17 +36,20 @@ int selectProduct(const CoffeeMachine& machine) {
             std::cout << "Invalid input. Please enter a number.\n";
             continue;
         }
+        
 
-        int productCount = machine.getProducts().size();
         if (number == 0) {
             return 0;
         }
-        else if (number < 1 || number > productCount) {
-            std::cout << "Invalid product number. Please try again.\n";
-        }
-        else {
-            return number;
-        }
+
+		bool exsist = std::any_of(machine.getProducts().begin(), machine.getProducts().end(), [number](const Product& p) { return p.number == number; });
+        
+		if (exsist) {
+			return number;
+		}
+		else {
+			std::cout << "Invalid product number. Please try again.\n";
+		}
     }
 }
 
